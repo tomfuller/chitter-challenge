@@ -9,9 +9,8 @@ class Peep
   property :peep, String
   property :created_at, DateTime
 
-  DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, "postgres://localhost/chitter_#{ENV['RACK_ENV']}")
-  DataMapper.finalize
-  DataMapper.auto_upgrade!
+  belongs_to :user
+
+
 
 end

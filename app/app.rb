@@ -1,5 +1,6 @@
 ENV["RACK_ENV"] ||= "development"
 
+require_relative './data_mapper_setup.rb'
 require 'sinatra/base'
 require 'sinatra/flash'
 require_relative './models/user.rb'
@@ -29,6 +30,7 @@ class Chitter < Sinatra::Base
 
   get '/peeps/index' do
     @peeps = Peep.all
+    p @peeps
     erb :'peeps/index'
   end
 
@@ -37,8 +39,13 @@ class Chitter < Sinatra::Base
   end
 
   post '/peeps/index' do
-    Peep.create(peep: params[:peep], :created_at => Time.now)
-    redirect '/peeps/index'
+    if session[:user_id]
+      peep = Peep.create(peep: params[:peep], :created_at => Time.now)
+      redirect '/peeps/index'
+    else
+      flash.now[:errors] = ['You are not currently logged in']
+      erb :'session/new'
+    end
   end
 
   get '/session/new' do

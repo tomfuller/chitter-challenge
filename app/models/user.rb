@@ -12,11 +12,8 @@ class User
   property :username, String, required: true, unique: true
   property :name, String, required: true
 
+  has n, :peeps, through: Resource
 
-  DataMapper::Logger.new($stdout, :debug)
-  DataMapper.setup(:default, "postgres://localhost/chitter_#{ENV['RACK_ENV']}")
-  DataMapper.finalize
-  DataMapper.auto_upgrade!
 
   def password=(password)
     self.password_digest = BCrypt::Password.create(password)
